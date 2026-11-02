@@ -14,10 +14,10 @@ Android-приложение для списка желаний. Можно до
 - хранить всё на телефоне, данные не пропадают после закрытия приложения
 
 ## Скриншоты приложения 
-<img src="screenshots/home.png" width="250">
-<img src="screenshots/details.jpg.png" width="250">
-<img src="screenshots/add.jpg.png" width="250">
-<img src="screenshots/settings.jpg.png" width="250">
+<img src="screenshots/home.jpg" width="250">
+<img src="screenshots/details.jpg" width="250">
+<img src="screenshots/add.jpg" width="250">
+<img src="screenshots/settings.jpg" width="250">
 
 ## Как устроено
 
