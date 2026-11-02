@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#d8d8dc">
+    <title>My wishes˚ ༘♡ ·˚ ₊˚ˑ｡･:*˚:✧｡</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-overlay"></div>
+
+    <header class="app-header">
+        <h1>My wishes˚ ༘♡ ·˚ ₊˚ˑ｡･:*˚:✧｡</h1>
+        <p id="wishCount" class="wish-count">0 желаний</p>
+    </header>
+
+    <main class="main-content">
+        <section class="screen active" id="homeScreen" aria-label="Мои желания">
+            <div class="toolbar">
+                <h2>Коллекция</h2>
+                <button class="icon-button" id="openCreateButton" aria-label="Добавить желание" title="Добавить желание" onclick="Android.openCreate()">＋</button>
+            </div>
+            <div class="wishlist-grid" id="wishlistGrid"></div>
+            <div class="empty-state" id="emptyState">
+                <div class="empty-symbol">✧</div>
+                <h2>Пока здесь пусто</h2>
+                <p>Добавь первое желание, чтобы оно появилось здесь.</p>
+                <button class="primary-button" id="emptyAddButton" onclick="Android.openCreate()">Добавить желание</button>
+            </div>
+        </section>
+
+        <section class="screen" id="createScreen" aria-label="Новое желание">
+            <div class="form-heading">
+                <button class="back-button" id="cancelFormButton" onclick="Android.cancelForm()">← Назад</button>
+                <h2 id="formTitle">Новое желание</h2>
+            </div>
+            <form id="wishForm" onsubmit="return false;">
+                <input type="hidden" id="wishId">
+                <label class="photo-picker" onclick="Android.pickPhoto()">
+                    <img id="photoPreview" alt="Предпросмотр фотографии" hidden>
+                    <span id="photoPlaceholder" class="photo-placeholder">＋<small>Добавить фотографию</small></span>
+                </label>
+
+                <label class="field-label" for="nameInput">Название *</label>
+                <input class="text-field" id="nameInput" type="text" maxlength="100" placeholder="Например, наушники">
+
+                <label class="field-label" for="priceInput">Цена</label>
+                <input class="text-field" id="priceInput" type="number" min="0" step="0.01" placeholder="0">
+
+                <label class="field-label" for="linkInput">Ссылка на товар</label>
+                <input class="text-field" id="linkInput" type="url" placeholder="https://...">
+
+                <label class="field-label" for="descriptionInput">Описание</label>
+                <textarea class="text-field textarea-field" id="descriptionInput" maxlength="1000" rows="4" placeholder="Почему ты этого хочешь?"></textarea>
+
+                <button class="primary-button full-width" type="button" id="saveWishButton"
+                        onclick="Android.saveWish(
+                            document.getElementById('wishId').value,
+                            document.getElementById('nameInput').value,
+                            document.getElementById('priceInput').value,
+                            document.getElementById('linkInput').value,
+                            document.getElementById('descriptionInput').value)">Сохранить желание</button>
+            </form>
+        </section>
+
+        <section class="screen" id="detailsScreen" aria-label="Информация о желании">
+            <button class="back-button" id="detailsBackButton" onclick="Android.navigate('homeScreen')">← К желаниям</button>
+            <article class="details-card glass">
+                <img id="detailsPhoto" class="details-photo" alt="Фотография желания" hidden>
+                <div id="detailsPhotoFallback" class="details-photo-fallback">✧</div>
+                <div class="details-content">
+                    <h2 id="detailsName"></h2>
+                    <p id="detailsPrice" class="details-price"></p>
+                    <p id="detailsDescription" class="details-description"></p>
+                    <a id="detailsLink" class="product-link" target="_blank" rel="noopener noreferrer" hidden>Открыть ссылку ↗</a>
+                    <div class="details-actions">
+                        <button class="secondary-button" id="editWishButton" onclick="Android.editCurrent()">Изменить</button>
+                        <button class="danger-button" id="deleteWishButton" onclick="Android.deleteCurrent()">Удалить</button>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <section class="screen" id="settingsScreen" aria-label="Настройки">
+            <h2 class="settings-title">Настройки</h2>
+            <div class="setting-row glass">
+                <div>
+                    <h3>Тёмная тема</h3>
+                    <p>Изменить оформление приложения</p>
+                </div>
+                <label class="switch">
+                    <input id="themeToggle" type="checkbox" onchange="Android.setDarkTheme(this.checked)">
+                    <span class="switch-slider"></span>
+                </label>
+            </div>
+            <div class="setting-row glass">
+                <div>
+                    <h3>Фоновое изображение</h3>
+                    <p>Выбери свою картинку для фона</p>
+                </div>
+                <label class="secondary-button file-button" onclick="Android.pickBackground()">Выбрать</label>
+            </div>
+            <button class="secondary-button full-width" id="resetBackgroundButton" onclick="Android.resetBackground()">Вернуть стандартный фон</button>
+            <p class="settings-note">Желания хранятся на этом устройстве в браузере приложения.</p>
+        </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Основная навигация">
+        <button class="nav-button active" data-screen="homeScreen" onclick="Android.navigate('homeScreen')"><span>୨୧</span><small>Желания</small></button>
+        <button class="nav-button" data-screen="createScreen" id="navCreateButton" onclick="Android.navigate('createScreen')"><span>✧</span><small>Добавить</small></button>
+        <button class="nav-button" data-screen="settingsScreen" onclick="Android.navigate('settingsScreen')"><span>·˚*</span><small>Настройки</small></button>
+    </nav>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
