@@ -13,6 +13,12 @@ Android-приложение для списка желаний. Можно до
 - показывать счётчик желаний (с правильным склонением: 1 желание, 2 желания, 5 желаний)
 - хранить всё на телефоне, данные не пропадают после закрытия приложения
 
+## Скриншоты приложения 
+<img src="screenshots/home.png" width="250">
+<img src="screenshots/details.jpg.png" width="250">
+<img src="screenshots/add.jpg.png" width="250">
+<img src="screenshots/settings.jpg.png" width="250">
+
 ## Как устроено
 
 Приложение сделано через `WebView`. Внешний вид написан на HTML и CSS, а вся логика написана на Java.
