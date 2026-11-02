@@ -3,7 +3,6 @@ package com.example.wishlist;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/** Модель данных: одно желание. */
 public class Wish {
     public final String id;
     public String name;

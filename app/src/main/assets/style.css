@@ -52,9 +52,36 @@ body.dark {
     --shadow: 0 12px 36px rgba(0,0,0,.24);
     --button-text: #24242a;
     background:
+        linear-gradient(rgba(10, 10, 14, .3), rgba(10, 10, 14, .45)),
+        url("background_dark.jpg"),
         radial-gradient(ellipse at 20% 15%, rgba(95,95,110,.45), transparent 40%),
         linear-gradient(135deg, #17171d, #35353e 55%, #202027);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
+
+body.pink {
+    --text: #4a1d33;
+    --muted: rgba(74, 29, 51, .7);
+    --glass: rgba(255, 255, 255, .3);
+    --glass-strong: rgba(255, 255, 255, .5);
+    --border: rgba(255, 255, 255, .6);
+    --shadow: 0 12px 36px rgba(180, 70, 110, .18);
+    --button-text: #5a1f3b;
+    --danger: #b3263f;
+    background:
+        linear-gradient(rgba(255, 190, 215, .2), rgba(255, 170, 205, .3)),
+        url("background_pink.jpg"),
+        radial-gradient(ellipse at 18% 10%, rgba(255,255,255,.7), transparent 40%),
+        radial-gradient(ellipse at 82% 82%, rgba(240,120,170,.4), transparent 45%),
+        linear-gradient(135deg, #f7b6cf, #ffdbe8 48%, #ee98b8);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+body.pink .background-overlay { background: rgba(255, 210, 228, .12); }
+body.pink .bottom-nav { background: rgba(255, 228, 238, .5); }
 
 button, input, textarea {
     font: inherit;
@@ -351,3 +378,9 @@ body.dark .bottom-nav { background: rgba(25,25,32,.58); }
     .wish-info p { font-size: 13px; }
     .setting-row { padding: 14px; }
 }
+
+/* выбор темы в настройках */
+.theme-row { flex-direction: column; align-items: stretch; }
+.theme-options { display: flex; gap: 8px; }
+.theme-option { flex: 1; padding: 10px 8px; font-size: 13px; }
+.theme-option.active { background: var(--glass-strong); border-color: var(--text); }

@@ -84,20 +84,21 @@
 
         <section class="screen" id="settingsScreen" aria-label="Настройки">
             <h2 class="settings-title">Настройки</h2>
-            <div class="setting-row glass">
+            <div class="setting-row glass theme-row">
                 <div>
-                    <h3>Тёмная тема</h3>
-                    <p>Изменить оформление приложения</p>
+                    <h3>Тема оформления</h3>
+                    <p>Светлая, тёмная или розовая</p>
                 </div>
-                <label class="switch">
-                    <input id="themeToggle" type="checkbox" onchange="Android.setDarkTheme(this.checked)">
-                    <span class="switch-slider"></span>
-                </label>
+                <div class="theme-options">
+                    <button class="secondary-button theme-option" data-theme="light" onclick="Android.setTheme('light')">Светлая</button>
+                    <button class="secondary-button theme-option" data-theme="dark" onclick="Android.setTheme('dark')">Тёмная</button>
+                    <button class="secondary-button theme-option" data-theme="pink" onclick="Android.setTheme('pink')">Розовая</button>
+                </div>
             </div>
             <div class="setting-row glass">
                 <div>
                     <h3>Фоновое изображение</h3>
-                    <p>Выбери свою картинку для фона</p>
+                    <p>Своя картинка для текущей темы</p>
                 </div>
                 <label class="secondary-button file-button" onclick="Android.pickBackground()">Выбрать</label>
             </div>

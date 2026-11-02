@@ -32,19 +32,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-/**
- * Вся логика приложения находится здесь.
- * index.html + style.css отвечают только за внешний вид:
- * нажатия кнопок попадают в Java через мост Bridge (window.Android),
- * а Java меняет страницу через evaluateJavascript().
- */
 public class MainActivity extends AppCompatActivity {
 
     // ---- ключи хранилища и идентификаторы экранов ----
     private static final String PREFS = "wishlist_prefs";
     private static final String KEY_ITEMS = "items";
-    private static final String KEY_DARK = "dark";
+    private static final String KEY_THEME = "theme";
+    private static final String KEY_DARK = "dark"; // старый ключ, нужен для переноса настроек
     private static final String KEY_BACKGROUND = "background";
+
+    private static final String THEME_LIGHT = "light";
+    private static final String THEME_DARK = "dark";
+    private static final String THEME_PINK = "pink";
 
     private static final String HOME = "homeScreen";
     private static final String CREATE = "createScreen";
@@ -54,14 +53,17 @@ public class MainActivity extends AppCompatActivity {
     private static final int PICK_PHOTO = 1;
     private static final int PICK_BACKGROUND = 2;
 
-    private static final String BG_OVERLAY =
+    private static final String BG_OVERLAY_DEFAULT =
             "linear-gradient(rgba(20,20,24,.28), rgba(20,20,24,.38))";
+    private static final String BG_OVERLAY_PINK =
+            "linear-gradient(rgba(255,190,215,.2), rgba(255,170,205,.3))";
 
     // ---- состояние приложения ----
     private WebView webView;
     private SharedPreferences prefs;
     private final List<Wish> wishes = new ArrayList<>();
     private String currentScreen = HOME;
+    private String currentTheme = THEME_LIGHT;
     private String currentWishId;
     private String selectedPhoto = "";
     private int pickTarget;
@@ -186,14 +188,14 @@ public class MainActivity extends AppCompatActivity {
         public void resetBackground() {
             runOnUiThread(() -> {
                 js("document.body.style.backgroundImage='';");
-                prefs.edit().remove(KEY_BACKGROUND).apply();
+                prefs.edit().remove(backgroundKey(currentTheme)).apply();
                 showToast("Стандартный фон восстановлен.");
             });
         }
 
         @JavascriptInterface
-        public void setDarkTheme(boolean dark) {
-            runOnUiThread(() -> applyTheme(dark));
+        public void setTheme(String theme) {
+            runOnUiThread(() -> applyTheme(theme));
         }
     }
 
@@ -202,9 +204,7 @@ public class MainActivity extends AppCompatActivity {
     // =====================================================================
     private void onPageReady() {
         loadWishes();
-        applyTheme(prefs.getBoolean(KEY_DARK, false));
-        String background = prefs.getString(KEY_BACKGROUND, null);
-        if (background != null) applyBackground(background);
+        applyTheme(loadSavedTheme());
         renderWishes();
         showScreen(HOME);
     }
@@ -416,14 +416,39 @@ public class MainActivity extends AppCompatActivity {
     // =====================================================================
     //  ТЕМА И ФОН
     // =====================================================================
-    private void applyTheme(boolean dark) {
-        js("document.body.classList.toggle('dark'," + dark + ");"
-                + el("themeToggle") + ".checked=" + dark + ";");
-        prefs.edit().putBoolean(KEY_DARK, dark).apply();
+    private String loadSavedTheme() {
+        String theme = prefs.getString(KEY_THEME, null);
+        if (theme == null) {
+            theme = prefs.getBoolean(KEY_DARK, false) ? THEME_DARK : THEME_LIGHT;
+        }
+        return theme;
+    }
+
+    private void applyTheme(String theme) {
+        if (!THEME_DARK.equals(theme) && !THEME_PINK.equals(theme)) theme = THEME_LIGHT;
+        currentTheme = theme;
+        prefs.edit().putString(KEY_THEME, theme).apply();
+
+        String t = JSONObject.quote(theme);
+        js("document.body.classList.remove('dark','pink');"
+                + "if(" + t + "!=='light') document.body.classList.add(" + t + ");"
+                + "document.querySelectorAll('.theme-option').forEach(function(b){"
+                + "b.classList.toggle('active', b.dataset.theme===" + t + ");});"
+                + "document.body.style.backgroundImage='';");
+
+        // у каждой темы свой фон: если пользователь выбирал картинку, ставим её
+        String background = prefs.getString(backgroundKey(theme), null);
+        if (background != null) applyBackground(background);
+    }
+
+    /** Для светлой темы остался прежний ключ, чтобы не потерять уже сохранённый фон. */
+    private String backgroundKey(String theme) {
+        return THEME_LIGHT.equals(theme) ? KEY_BACKGROUND : KEY_BACKGROUND + "_" + theme;
     }
 
     private void applyBackground(String dataUri) {
-        String css = BG_OVERLAY + ", url(\"" + dataUri + "\")";
+        String overlay = THEME_PINK.equals(currentTheme) ? BG_OVERLAY_PINK : BG_OVERLAY_DEFAULT;
+        String css = overlay + ", url(\"" + dataUri + "\")";
         js("document.body.style.backgroundImage=" + JSONObject.quote(css) + ";"
                 + "document.body.style.backgroundSize='cover';"
                 + "document.body.style.backgroundPosition='center';");
@@ -457,7 +482,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         applyBackground(data);
-        prefs.edit().putString(KEY_BACKGROUND, data).apply();
+        prefs.edit().putString(backgroundKey(currentTheme), data).apply();
         showToast("Фон обновлён.");
     }
 
